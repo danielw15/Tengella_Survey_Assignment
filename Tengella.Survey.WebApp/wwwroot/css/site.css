@@ -1,0 +1,220 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    background-color: #f8f9fa;
+    margin-bottom: 60px;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.table-container, .summary-card, .form-container, .stat-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.table thead {
+    background-color: #007bff;
+    color: white;
+}
+
+.display-4, .text-primary {
+    color: #007bff;
+}
+
+.btn-primary, .btn-secondary, .btn-info, .btn-danger, .btn-custom, .btn-success, .btn-warning {
+    color: white;
+    background-color: #007bff;
+}
+
+    .btn-custom:hover, .btn-primary:hover, .btn-secondary:hover, .btn-info:hover, .btn-danger:hover, .btn-success:hover, .btn-warning:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.chart-container {
+    margin-top: 20px;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 300px;
+    margin: auto;
+}
+
+.chart-buttons {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.card-header, .modal-header {
+    background-color: #007bff;
+    color: white;
+}
+
+.question-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.lead {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-4, .my-4, .mb-5 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Body Styling */
+body {
+    background-color: #f0f2f5;
+    font-family: 'Roboto', sans-serif;
+    color: #333333;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #007bff;
+}
+
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+    .navbar-brand:hover, .nav-link:hover {
+        color: #dfe6e9 !important;
+    }
+
+/* Centering Navbar Items */
+.navbar-nav {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.nav-item {
+    margin: 0 15px;
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+/* Main Content Styling */
+main {
+    padding: 20px;
+    background: #ffffff;
+    color: #333333;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary, .btn-info, .btn-success, .btn-warning, .btn-danger, .btn-custom {
+    color: #ffffff;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+/* Chart Styling */
+.chart-container {
+    margin-top: 20px;
+}
+
+.chart-wrapper {
+    width: 300px;
+    height: 300px;
+    margin: auto;
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.mb-4, .my-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary, .btn-secondary, .btn-info, .btn-danger, .btn-custom {
+    color: white;
+    background-color: #007bff;
+}
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+.question-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}

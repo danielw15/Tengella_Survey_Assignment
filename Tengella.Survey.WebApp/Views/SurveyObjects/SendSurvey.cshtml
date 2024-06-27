@@ -1,0 +1,178 @@
+﻿@model Tengella.Survey.WebApp.Models.SendSurveyViewModel
+
+@{
+    ViewData["Title"] = "Send Email";
+}
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h1 class="display-4 text-primary">Survey - Send Survey Email</h1>
+        <form asp-controller="SurveyObjects" asp-action="MailSurveyToList" method="post">
+            <input type="hidden" name="SurveyObjectId" value="@Model.SurveyObjectId" />
+
+            <div class="form-group">
+                <h4>Survey Title: @Model.SurveyTitle</h4>
+                <h4>Survey Description: @Model.SurveyDescription</h4>
+                <input type="hidden" name="SurveyTitle" value="@Model.SurveyTitle" />
+                <input type="hidden" name="SurveyDescription" value="@Model.SurveyDescription" />
+            </div>
+
+            <div class="form-group">
+                <label for="Subject">Subject</label>
+                <input type="text" name="Subject" class="form-control" placeholder="E-mail Subject" />
+            </div>
+
+            <div class="form-group">
+                <label for="Message">Message</label>
+                <textarea name="Message" class="form-control" placeholder="E-mail Message"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="SurveyLink">Survey Link</label>
+                <input type="text" name="SurveyLink" class="form-control" value="@Model.SurveyLink" />
+            </div>
+
+            <h4>Email List</h4>
+
+            <div id="users-container">
+                @for (int j = 0; j < Model.Users.Count; j++)
+                {
+                    <div id="user-@j" class="form-group border p-3 mb-2">
+                        <button type="button" class="btn btn-sm btn-danger mb-2" onclick="removeUserRecipient(@j)">Remove User</button>
+
+                        <input type="text" name="Users[@j].FirstName" class="form-control mb-2" placeholder="First Name" />
+                        <input type="text" name="Users[@j].LastName" class="form-control mb-2" placeholder="Last Name" />
+                        <input type="email" name="Users[@j].Email" class="form-control mb-2" placeholder="Email" />
+
+                        <select name="Users[@j].UserType" class="form-control mb-2" onchange="toggleOrgFields(@j, this.value)">
+                            <option value="private_person">Private Person</option>
+                            <option value="company_person">Company Person</option>
+                            <option value="government_person">Government Person</option>
+                        </select>
+
+                        <div id="org-fields-@j" style="display:none;">
+                            <input type="text" name="Users[@j].OrgNumber" class="form-control mb-2" placeholder="Org Number" />
+                            <input type="text" name="Users[@j].OrgName" class="form-control mb-2" placeholder="Org Name" />
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button type="button" class="btn btn-custom mb-3" onclick="addUserRecipient()">Add User</button>
+            <button type="submit" class="btn btn-custom mb-3">Send to Users</button>
+            <button type="button" class="btn btn-secondary mb-3" onclick="showSurveyPreview()">Preview Survey</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Preview Survey -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Survey Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="surveyPreviewBody">
+                <!-- Survey preview content will be injected here by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let userCount = @Model.Users.Count;
+
+    function addUserRecipient() {
+        const usersContainer = document.getElementById('users-container');
+
+        const userDiv = document.createElement('div');
+        userDiv.id = `user-${userCount}`;
+        userDiv.classList.add('form-group', 'border', 'p-3', 'mb-2');
+
+        userDiv.innerHTML = `
+                <button type="button" class="btn btn-sm btn-danger mb-2" onclick="removeUserRecipient(${userCount})">Remove User</button>
+                <input type="text" name="Users[${userCount}].FirstName" class="form-control mb-2" placeholder="First Name" />
+                <input type="text" name="Users[${userCount}].LastName" class="form-control mb-2" placeholder="Last Name" />
+                <input type="email" name="Users[${userCount}].Email" class="form-control mb-2" placeholder="Email" />
+                <select name="Users[${userCount}].UserType" class="form-control mb-2" onchange="toggleOrgFields(${userCount}, this.value)">
+                    <option value="private_person">Private Person</option>
+                    <option value="company_person">Company Person</option>
+                    <option value="government_person">Government Person</option>
+                </select>
+                <div id="org-fields-${userCount}" style="display:none;">
+                    <input type="text" name="Users[${userCount}].OrgNumber" class="form-control mb-2" placeholder="Org Number" />
+                    <input type="text" name="Users[${userCount}].OrgName" class="form-control mb-2" placeholder="Org Name" />
+                </div>
+            `;
+
+        usersContainer.appendChild(userDiv);
+        userCount++;
+    }
+
+    function removeUserRecipient(userIndex) {
+        const userDiv = document.getElementById(`user-${userIndex}`);
+        if (userDiv) {
+            userDiv.remove();
+        }
+    }
+
+    function toggleOrgFields(userIndex, userType) {
+        const orgFields = document.getElementById(`org-fields-${userIndex}`);
+        if (userType === "company_person") {
+            orgFields.style.display = "block";
+        } else {
+            orgFields.style.display = "none";
+        }
+    }
+
+    function showSurveyPreview() {
+        const previewBody = document.getElementById('surveyPreviewBody');
+        previewBody.innerHTML = '';
+
+        const questions = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AddChoice.Questions));
+        if (questions.length === 0) {
+            previewBody.innerHTML = '<p>No questions available for this survey.</p>';
+        } else {
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('mb-3');
+
+                const questionTitle = document.createElement('h5');
+                questionTitle.textContent = `Q${index + 1}: ${question.QuestionName}`;
+                questionDiv.appendChild(questionTitle);
+
+                if (question.QuestionChoices && question.QuestionChoices.length > 0) {
+                    const choiceList = document.createElement('ul');
+                    question.QuestionChoices.forEach(choice => {
+                        const choiceItem = document.createElement('li');
+                        choiceItem.textContent = choice.ChoiceText;
+                        choiceList.appendChild(choiceItem);
+                    });
+                    questionDiv.appendChild(choiceList);
+                } else {
+                    const noChoicesMessage = document.createElement('p');
+                    noChoicesMessage.textContent = 'No choices available for this question.';
+                    questionDiv.appendChild(noChoicesMessage);
+                }
+
+                previewBody.appendChild(questionDiv);
+            });
+        }
+
+        new bootstrap.Modal(document.getElementById('previewModal')).show();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize the visibility of organization fields based on the user type
+    @for (int j = 0; j < Model.Users.Count; j++)
+    {
+        <text>toggleOrgFields(@j, "@Model.Users[j].UserType"); </text>
+    }
+        });
+</script>

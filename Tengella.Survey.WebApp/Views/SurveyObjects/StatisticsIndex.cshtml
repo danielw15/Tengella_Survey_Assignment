@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Tengella.Survey.WebApp.Models.SurveySummaryViewModel>
+
+@{
+    ViewData["Title"] = "Survey Statistics";
+}
+
+<div class="container">
+    <div class="text-center mb-4">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+    </div>
+
+    <div class="row">
+        @foreach (var survey in Model)
+        {
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <h4>@survey.SurveyTitle</h4>
+                    <p>@survey.SurveyDescription</p>
+                    <p><strong>Total Submissions:</strong> @survey.TotalSubmissions</p>
+                    <p><strong>Average Answers per Submission:</strong> @survey.AverageAnswersPerSubmission.ToString("F2")</p>
+                    <a href="@Url.Action("Statistics", new { id = survey.SurveyObjectId })" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

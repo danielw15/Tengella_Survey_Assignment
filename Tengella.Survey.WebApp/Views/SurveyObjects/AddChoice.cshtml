@@ -1,0 +1,120 @@
+﻿@model Tengella.Survey.WebApp.Models.AddChoiceViewModel
+@using Tengella.Survey.Data.Enums
+
+@{
+    ViewData["Title"] = "Add Choices";
+}
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h1 class="display-4 text-primary">Survey - Add Choice</h1>
+        <form asp-controller="SurveyObjects" asp-action="SaveChoices" method="post">
+            <input type="hidden" name="SurveyObjectId" value="@Model.SurveyObjectId" />
+
+            @for (int i = 0; i < Model.Questions.Count; i++)
+            {
+                <div class="question-container mb-4 p-3 border rounded">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>ID:</strong> @Model.Questions[i].QuestionId</label><br />
+                        <label class="form-label"><strong>Name:</strong> @Model.Questions[i].QuestionName</label><br />
+                        <label class="form-label"><strong>Position:</strong> @Model.Questions[i].QuestionPosition</label><br />
+                        <label class="form-label"><strong>Type:</strong> @Model.Questions[i].QuestionType</label>
+                    </div>
+
+                    <input type="hidden" name="Questions[@i].QuestionId" value="@Model.Questions[i].QuestionId" />
+                    <input type="hidden" name="Questions[@i].SurveyObjectId" value="@Model.SurveyObjectId" />
+                    <input type="hidden" name="Questions[@i].QuestionName" value="@Model.Questions[i].QuestionName" />
+                    <input type="hidden" name="Questions[@i].QuestionPosition" value="@Model.Questions[i].QuestionPosition" />
+                    <input type="hidden" name="Questions[@i].QuestionType" value="@Model.Questions[i].QuestionType" />
+
+                    @if (Model.Questions[i].QuestionType == QuestionType.single_choice.ToString())
+                    {
+                        <div id="singlechoices-@i">
+                            <button type="button" class="btn btn-sm btn-custom mb-3" onclick="addSingleChoice(@i)">Add Choice</button>
+                            @for (int j = 0; j < Model.Questions[i].QuestionChoices.Count; j++)
+                            {
+                                <div class="mb-3">
+                                    <input type="hidden" name="Questions[@i].QuestionChoices[@j].QuestionId" value="@Model.Questions[i].QuestionId" />
+                                    <input type="hidden" name="Questions[@i].QuestionChoices[@j].ChoicePosition" value="@Model.Questions[i].QuestionChoices[@j].ChoicePosition" />
+
+                                    @if (Model.Questions[i].QuestionChoices.Count >= j)
+                                    {
+                                        <input type="hidden" name="Questions[@i].QuestionChoices[@j].ChoiceId" value="@Model.Questions[i].QuestionChoices[j].ChoiceId" />
+                                        <input type="text" name="Questions[@i].QuestionChoices[@j].ChoiceText" class="form-control" value="@Model.Questions[i].QuestionChoices[j].ChoiceText" />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" name="Questions[@i].QuestionChoices[@j].ChoiceText" class="form-control" />
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Questions[i].QuestionType == QuestionType.free_text_choice.ToString())
+                    {
+                        <div id="freetextchoices-@i">
+                            <input type="hidden" name="Questions[@i].QuestionChoices[0].QuestionId" value="@Model.Questions[i].QuestionId" />
+                            <input type="hidden" name="Questions[@i].QuestionChoices[0].ChoicePosition" value="@Model.Questions[i].QuestionChoices[0].ChoicePosition" />
+                            @if (Model.Questions[i].QuestionChoices[0].ChoiceId != 0)
+                            {
+                                <input type="hidden" name="Questions[@i].QuestionChoices[0].ChoiceId" value="@Model.Questions[i].QuestionChoices[0].ChoiceId" />
+                                <input type="text" name="Questions[@i].QuestionChoices[0].ChoiceText" class="form-control" value="@Model.Questions[i].QuestionChoices[0].ChoiceText" />
+                            }
+                            else
+                            {
+                                <input type="text" name="Questions[@i].QuestionChoices[0].ChoiceText" class="form-control" />
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary">Save Choices</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    const choiceCounts = [];
+    const questionIds = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+    @for (int i = 0; i < Model.Questions.Count; i++)
+    {
+        <text>
+                choiceCounts[@i] = @Model.Questions[i].QuestionChoices.Count;
+            questionIds[@i] = @Model.Questions[i].QuestionId;
+        </text>
+    }
+                        });
+
+    function addSingleChoice(questionIndex) {
+        const choicesDiv = document.getElementById(`singlechoices-${questionIndex}`);
+        const choiceIndex = choiceCounts[questionIndex];
+
+        const newChoiceText = document.createElement('input');
+        newChoiceText.type = 'text';
+        newChoiceText.name = `Questions[${questionIndex}].QuestionChoices[${choiceIndex}].ChoiceText`;
+        newChoiceText.classList.add('form-control', 'mb-2');
+
+        const newChoiceQuestionId = document.createElement('input');
+        newChoiceQuestionId.type = 'hidden';
+        newChoiceQuestionId.name = `Questions[${questionIndex}].QuestionChoices[${choiceIndex}].QuestionId`;
+        newChoiceQuestionId.value = questionIds[questionIndex];
+
+        const newChoicePosition = document.createElement('input');
+        newChoicePosition.type = 'hidden';
+        newChoicePosition.name = `Questions[${questionIndex}].QuestionChoices[${choiceIndex}].ChoicePosition`;
+        newChoicePosition.value = choiceIndex;
+
+        choicesDiv.append(newChoiceText, newChoicePosition, newChoiceQuestionId);
+        choiceCounts[questionIndex]++;
+    }
+</script>

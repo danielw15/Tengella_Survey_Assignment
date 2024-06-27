@@ -1,0 +1,54 @@
+﻿@model Tengella.Survey.WebApp.Models.SurveyViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h1 class="display-4 text-primary">Survey Details</h1>
+        <h4>Survey Information</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SurveyTitle)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SurveyTitle)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SurveyDescription)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SurveyDescription)
+            </dd>
+        </dl>
+    </div>
+
+    @foreach (var question in Model.SurveyQuestions)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>@question.QuestionPosition. @question.QuestionName</strong>
+            </div>
+            <div class="card-body">
+                @foreach (var choice in question.QuestionChoices.OrderBy(q => q.ChoicePosition))
+                {
+                    <div class="form-check">
+                        @Html.RadioButtonFor(model => choice.ChoiceText, "Yes", new { @class = "form-check-input" })
+                        <label class="form-check-label">@choice.ChoiceText</label>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="form-container">
+        <a class="btn btn-warning mb-3" asp-action="Statistics" asp-route-id="@Model.SurveyObjectId">Show Stats</a>
+        <a class="btn btn-primary mb-3" asp-action="SendSurvey" asp-route-id="@Model.SurveyObjectId">Email Survey</a>
+        <a class="btn btn-secondary mb-3" asp-action="CreateSubmission" asp-route-id="@Model.SurveyObjectId">Take Survey</a>
+        <a class="btn btn-success mb-3" asp-action="AddChoice" asp-route-id="@Model.SurveyObjectId">Add Choice</a>
+        <a class="btn btn-warning mb-3" asp-action="Edit" asp-route-id="@Model.SurveyObjectId">Edit</a>
+        <a class="btn btn-secondary mb-3" asp-action="Index">Back to List</a>
+    </div>
+</div>

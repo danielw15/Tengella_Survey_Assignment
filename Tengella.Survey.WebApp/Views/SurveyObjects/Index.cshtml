@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Tengella.Survey.WebApp.Models.SurveyViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Survey Management</h1>
+        <p>Manage your surveys efficiently and easily.</p>
+        <a class="btn btn-primary btn-lg" asp-action="Create">Create New Survey</a>
+    </div>
+
+    <div class="table-container">
+        <h2 class="mb-4">All Surveys</h2>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.SurveyObjectId)</th>
+                    <th>@Html.DisplayNameFor(model => model.SurveyTitle)</th>
+                    <th>@Html.DisplayNameFor(model => model.SurveyDescription)</th>
+                    <th>@Html.DisplayNameFor(model => model.SurveyType)</th>
+                    <th>@Html.DisplayNameFor(model => model.UserEmail)</th>
+                    <th style="width: 250px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.SurveyObjectId)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SurveyTitle)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SurveyDescription)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SurveyType)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserEmail)</td>
+                        <td class="nowrap">
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@item.SurveyObjectId">Edit</a>
+                            <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.SurveyObjectId">Details</a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.SurveyObjectId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+﻿@model Tengella.Survey.WebApp.Models.SurveyViewModel
+
+@{
+    ViewData["Title"] = "Edit Survey";
+}
+
+
+<div class="container">
+    <div class="text-center mb-4">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="SurveyObjectId" value="@Model.SurveyObjectId"/>
+            <input type="hidden" name="SurveyQuestions" value="@Model.SurveyQuestions" />
+            <input type="hidden" name="SurveyChoices" value="@Model.SurveyChoices" />
+
+            <div class="form-group mb-3">
+                <label asp-for="SurveyTitle" class="control-label"></label>
+                <input asp-for="SurveyTitle" class="form-control" />
+                <span asp-validation-for="SurveyTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SurveyDescription" class="control-label"></label>
+                <input asp-for="SurveyDescription" class="form-control" />
+                <span asp-validation-for="SurveyDescription" class="text-danger"></span>
+            </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="SurveyType" class="control-label"></label>
+                    <input asp-for="SurveyType" class="form-control" />
+                    <span asp-validation-for="SurveyType" class="text-danger"></span>
+                </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

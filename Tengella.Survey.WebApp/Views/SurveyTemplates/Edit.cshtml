@@ -1,0 +1,115 @@
+﻿@model Tengella.Survey.WebApp.Models.SurveyTemplateEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Survey Template";
+}
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h1>Edit Survey Template</h1>
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="SurveyTemplateId" />
+
+            <div class="form-group">
+                <label asp-for="TemplateName" class="control-label"></label>
+                <input asp-for="TemplateName" class="form-control" />
+                <span asp-validation-for="TemplateName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <h4>Questions</h4>
+            <div id="questions-container">
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    <div class="question-container mb-3">
+                        <input type="hidden" asp-for="Questions[i].TemplateQuestionId" />
+
+                        <div class="form-group">
+                            <label asp-for="Questions[i].QuestionText" class="control-label"></label>
+                            <input asp-for="Questions[i].QuestionText" class="form-control" />
+                            <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Questions[i].QuestionType" class="control-label"></label>
+                            <input asp-for="Questions[i].QuestionType" class="form-control" />
+                            <span asp-validation-for="Questions[i].QuestionType" class="text-danger"></span>
+                        </div>
+
+                        <h5>Choices</h5>
+                        <div id="choices-container-@i">
+                            @for (int j = 0; j < Model.Questions[i].Choices.Count; j++)
+                            {
+                                <div class="choice-container mb-2">
+                                    <input type="hidden" asp-for="Questions[i].Choices[j].TemplateChoiceId" />
+                                    <input asp-for="Questions[i].Choices[j].ChoiceText" class="form-control mb-2" />
+                                    <span asp-validation-for="Questions[i].Choices[j].ChoiceText" class="text-danger"></span>
+                                </div>
+                            }
+                            <button type="button" class="btn btn-sm btn-secondary mb-2" onclick="addChoice(@i)">Add Choice</button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addQuestion()">Add Question</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let questionIndex = @Model.Questions.Count;
+        let choiceIndexes = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Questions.Select(q => q.Choices.Count).ToArray()));
+
+        function addQuestion() {
+            const questionsContainer = document.getElementById('questions-container');
+
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question-container', 'mb-3');
+            questionDiv.innerHTML = `
+                        <input type="hidden" name="Questions[${questionIndex}].TemplateQuestionId" value="0" />
+                        <div class="form-group">
+                            <label for="Questions_${questionIndex}__QuestionText" class="control-label">Question Text</label>
+                            <input name="Questions[${questionIndex}].QuestionText" class="form-control" />
+                            <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].QuestionText" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Questions_${questionIndex}__QuestionType" class="control-label">Question Type</label>
+                            <input name="Questions[${questionIndex}].QuestionType" class="form-control" />
+                            <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].QuestionType" data-valmsg-replace="true"></span>
+                        </div>
+                        <h5>Choices</h5>
+                        <div id="choices-container-${questionIndex}">
+                            <button type="button" class="btn btn-sm btn-secondary mb-2" onclick="addChoice(${questionIndex})">Add Choice</button>
+                        </div>
+                    `;
+
+            questionsContainer.appendChild(questionDiv);
+            choiceIndexes.push(0);
+            questionIndex++;
+        }
+
+        function addChoice(questionIndex) {
+            const choicesContainer = document.getElementById(`choices-container-${questionIndex}`);
+            const choiceIndex = choiceIndexes[questionIndex];
+
+            const choiceDiv = document.createElement('div');
+            choiceDiv.classList.add('choice-container', 'mb-2');
+            choiceDiv.innerHTML = `
+                        <input type="hidden" name="Questions[${questionIndex}].Choices[${choiceIndex}].TemplateChoiceId" value="0" />
+                        <input name="Questions[${questionIndex}].Choices[${choiceIndex}].ChoiceText" class="form-control mb-2" />
+                        <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].Choices[${choiceIndex}].ChoiceText" data-valmsg-replace="true"></span>
+                    `;
+
+            choicesContainer.insertBefore(choiceDiv, choicesContainer.lastElementChild);
+            choiceIndexes[questionIndex]++;
+        }
+    </script>
+}
